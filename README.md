@@ -1,5 +1,8 @@
 # css-ease
 
+Compiled code can be found in /docs page (because github allows hosting in that
+folder)
+
 ## Project setup
 ```
 npm install
