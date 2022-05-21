@@ -1,9 +1,9 @@
 <template>
-    <div id="easing">
+    <div id="easing" :class="aboutOpened ? 'flipped' : ''">
         <div id="options">
-            <div class="function" v-for="func in easingFunctions" :key="func.text">
+            <div class="function" v-for="func in easingFunctions" :key="func.text" @click="toggleFunc(func)">
                 <div class="select">
-                    <input :id="`checkbox-${func.text}`" type="checkbox">
+                    <input v-model="func.selected" :id="`checkbox-${func.text}`" type="checkbox">
                 </div>
                 
                 <div class="text">
@@ -18,7 +18,9 @@
             </div>
         </div>
         <div id="graphing" style="text-align: center;padding-top: 40px;">
-            Graph goes here :p
+            Graph goes here :p <br />
+            <input type="range" min="0" max="3" step="0.1" /><br />
+            <button>Play</button>
         </div>
     </div>
 </template>
@@ -27,12 +29,49 @@
 import easingFunctions from "@/assets/easing-functions-subset-1.json";
 
 export default {
+    props: {
+        aboutOpened: {
+            type: Boolean,
+            required: true
+        }
+    },
+
+    mounted() {
+        // make all functions be selected by defaul
+        this.easingFunctions = easingFunctions.easingFunctions;
+        for (const key of Object.keys(this.easingFunctions)) {
+            this.easingFunctions[key].selected = false
+        }
+    },
+
     data: () => ({
-        easingFunctions: easingFunctions.easingFunctions
+        easingFunctions: [
+            {
+                text: '😎',
+                selected: true
+            }
+        ],
+        update: 1
     }),
     
     filters: {
         capitalize: x => x[0].toUpperCase() + x.substr(1)
+    },
+
+    computed: {
+        selectedFuncs() {
+            this.update
+            return Object.entries(this.easingFunctions).filter(x => x[1].selected).map(x => x[1])
+        }
+    },
+
+    methods: {
+        toggleFunc(func) {
+            func.selected = !func.selected
+            this.update += 1;
+            // Goddamit vue2...
+            this.$forceUpdate();
+        }
     }
 }
 </script>
@@ -43,21 +82,31 @@ export default {
     grid-template-columns: 1fr 1fr;
     grid-gap: 40px;
     padding: 40px;
+    width: 90%;
+
+    @media screen and (max-width: 600px) {
+        grid-template-columns: 1fr;
+    }
 
     #graphing, #options {
         width: 100%;
         height: calc(100vh - 160px);
-        background: #fafafa
+        background: #fafafa;
+        
+        @media screen and (max-width: 600px) {
+            grid-template-columns: 1fr;
+            height: calc(50vh - 160px);
+        }
     }
 
     #options {
         overflow: auto;
 
-
         .function {
             display: grid;
             grid-template-columns: 50px auto;
-            margin: 20px 10px;
+            height: 80px;
+            align-items: center;
 
             .name {
                 font-weight: bold;
@@ -65,6 +114,14 @@ export default {
 
             .description {
                 color: gray;
+            }
+
+            &:nth-child(odd) {
+                background: #e8e8e8;
+            }
+
+            &:hover {
+                cursor: pointer;
             }
         }
     }
