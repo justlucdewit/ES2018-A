@@ -34,7 +34,7 @@ const evaluateFormula = (formula, t) => {
     return (new Function(`return t => ${formula}`))()(t);
 }
 
-const drawFormula = (formula, color) => {
+const drawFormula = (formula, color, n) => {
     ctx.strokeStyle = color
     const points = []
     
@@ -48,25 +48,38 @@ const drawFormula = (formula, color) => {
     points.splice(1, points.length).forEach(point => {
         ctx.lineTo(point.x, point.y);
     });
+
     ctx.stroke();
+
+    ctx.ellipse(n * canvas.width, canvas.height - evaluateFormula(formula, n) * canvas.height, 5, 5, 0, 0, Math.PI * 2)
+
 }
 
-const renderFormulas = (formulas) => {
+const renderFormulas = (formulas, n) => {
     drawBackground();
     drawGuideLines();
+    drawSliderLine(n);
 
     const colors = ['red', 'blue', 'green', 'black', 'cyan', 'purple'];
 
     formulas.forEach((f, i) => {
-        drawFormula(f, colors[i % colors.length])
+        drawFormula(f, colors[i % colors.length], n)
     });
+}
+
+const drawSliderLine = (n) => {
+    ctx.strokeStyle = 'red'
+    ctx.beginPath();
+    ctx.moveTo(n * canvas.width, 0);
+    ctx.lineTo(n * canvas.width, canvas.height);
+    ctx.stroke();
 }
 
 setTimeout(() => {
     canvas = document.getElementById('graph-canvas');
     ctx = canvas.getContext('2d');
 
-    renderFormulas([])
+    renderFormulas([], 0.5)
 }, 500)
 
 module.exports = { renderFormulas }

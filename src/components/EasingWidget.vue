@@ -22,7 +22,7 @@
             
             <div>
                 0s
-                <input type="range" min="0" max="3" step="0.1" />
+                <input @change="redrawSelectedFuncs()" v-model="n" class="slider" type="range" min="0" max="1" step="0.01" />
                 3s
             </div>
             
@@ -58,7 +58,8 @@ export default {
                 selected: true
             }
         ],
-        update: 1
+        update: 1,
+        n: 0.5
     }),
     
     filters: {
@@ -74,7 +75,7 @@ export default {
 
     methods: {
         redrawSelectedFuncs() {
-            renderFormulas(this.selectedFuncs.map(x => x.equation))
+            renderFormulas(this.selectedFuncs.map(x => x.equation), this.n)
         },
 
         toggleFunc(func) {
@@ -99,6 +100,35 @@ export default {
     padding: 40px;
     width: 90%;
 
+    .slider {
+        -webkit-appearance: none;
+        width: 50%;
+        height: 10px;
+        background: #2c69a3;
+        outline: none;
+        border-radius: 8px;
+        margin: 20px 0;
+    }
+
+    .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 30px;
+        height: 30px;
+        background: #2c69a3;
+        cursor: pointer;
+        border-radius: 8px;
+    }
+
+    .slider::-moz-range-thumb {
+        width: 20px;
+        height: 60px;
+        background: #000;
+        cursor: pointer;
+        border: 5px solid lawngreen;
+        border-radius: 4px;
+    }
+
     @media screen and (max-width: 600px) {
         grid-template-columns: 1fr;
     }
@@ -111,6 +141,7 @@ export default {
         @media screen and (max-width: 600px) {
             grid-template-columns: 1fr;
             height: calc(50vh - 160px);
+            width: calc(100vw - 60px);
         }
     }
 

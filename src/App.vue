@@ -2,6 +2,7 @@
   <div>
     <Header @toggleAbout="toggleOpen" />
     <AboutPopupOver :open="aboutOpened" />
+    <BackToTop />
 
     <div class="flip-card" >
       <div class="flip-card-inner" :class="aboutOpened ? 'flipped' : ''">
@@ -21,14 +22,15 @@ import Header from "@/components/Header.vue";
 import AboutPopupFlip from "@/components/AboutPopupFlip.vue";
 import AboutPopupOver from "@/components/AboutPopupOver.vue";
 import EasingWidget from "@/components/EasingWidget.vue";
-
+import BackToTop from "@/components/BackToTop.vue";
 
 export default {
   components: {
     Header,
     AboutPopupFlip,
     EasingWidget,
-    AboutPopupOver
+    AboutPopupOver,
+    BackToTop
   },
   
   data: () => ({
@@ -48,7 +50,8 @@ html, body {
   padding: 0;
   margin: 0;
   max-width: 100vw;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .flip-card {
