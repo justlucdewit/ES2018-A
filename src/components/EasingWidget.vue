@@ -18,8 +18,14 @@
             </div>
         </div>
         <div id="graphing" style="text-align: center;padding-top: 40px;">
-            Graph goes here :p <br />
-            <input type="range" min="0" max="3" step="0.1" /><br />
+            <canvas height="300" width="300" id="graph-canvas" /><br />
+            
+            <div>
+                0s
+                <input type="range" min="0" max="3" step="0.1" />
+                3s
+            </div>
+            
             <button>Play</button>
         </div>
     </div>
@@ -27,6 +33,7 @@
 
 <script>
 import easingFunctions from "@/assets/easing-functions-subset-1.json";
+import { renderFormulas } from "../graph-renderer.js"
 
 export default {
     props: {
@@ -66,11 +73,19 @@ export default {
     },
 
     methods: {
+        redrawSelectedFuncs() {
+            renderFormulas(this.selectedFuncs.map(x => x.equation))
+        },
+
         toggleFunc(func) {
             func.selected = !func.selected
             this.update += 1;
+
             // Goddamit vue2...
             this.$forceUpdate();
+
+            // Redraw graphs
+            this.redrawSelectedFuncs()
         }
     }
 }
