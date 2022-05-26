@@ -1,7 +1,7 @@
 <template>
     <div id="easing" :class="aboutOpened ? 'flipped' : ''">
         <div id="options">
-            <div class="function" v-for="func in easingFunctions" :key="func.text" @click="toggleFunc(func)">
+            <div class="function" v-for="func in easingFunctions" :key="func.text" @click="toggleFunc(func)" :title="'value = ' + func.formula">
                 <div class="select">
                     <input v-model="func.selected" :id="`checkbox-${func.text}`" type="checkbox">
                 </div>
@@ -26,7 +26,9 @@
                 3s
             </div>
             
-            <button>Play</button>
+            <button @click="playing = !playing">
+                {{ playing ? 'Pause' : 'Play' }}
+            </button>
         </div>
     </div>
 </template>
@@ -49,6 +51,23 @@ export default {
         for (const key of Object.keys(this.easingFunctions)) {
             this.easingFunctions[key].selected = false
         }
+
+        const frameDuration = 50;
+
+        this.$nextTick(() => {
+            setInterval(() => {
+                // animate n when playing
+                this.n = Number(this.n)
+                if (this.playing) {
+                    this.n += Number(1 / (3 * 1000 / frameDuration));
+                    if (this.n > 1) {
+                        this.n = 0;
+                    }
+                }
+
+                this.redrawSelectedFuncs();
+            }, frameDuration)
+        })
     },
 
     data: () => ({
@@ -59,6 +78,7 @@ export default {
             }
         ],
         update: 1,
+        playing: false,
         n: 0.5
     }),
     
@@ -122,13 +142,14 @@ export default {
 
     .slider::-moz-range-thumb {
         width: 20px;
-        height: 60px;
-        background: #000;
+        height: 40px;
+        background: #2c69a3;
         cursor: pointer;
-        border: 5px solid lawngreen;
+        border: 5px solid #2c69a3;
         border-radius: 4px;
     }
 
+    // Enter 1 column mode on mobile
     @media screen and (max-width: 600px) {
         grid-template-columns: 1fr;
     }
@@ -162,10 +183,12 @@ export default {
                 color: gray;
             }
 
+            // All odd rows have special bg
             &:nth-child(odd) {
                 background: #e8e8e8;
             }
 
+            // Respond to hover
             &:hover {
                 cursor: pointer;
             }

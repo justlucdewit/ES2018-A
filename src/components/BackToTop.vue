@@ -28,10 +28,12 @@ export default {
     z-index: 1000;
     visibility: hidden;
 
+    // Only visible when mobile
     @media screen and (max-width: 600px) {
         visibility: visible;
     }
 
+    // Responde to hover
     &:hover {
         background: #eee;
         cursor: pointer;
